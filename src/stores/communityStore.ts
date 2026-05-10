@@ -1,62 +1,130 @@
 import { create } from 'zustand';
-import type { Post } from '../types';
+import { persist } from 'zustand/middleware';
 import { communityService } from '../services/mockServices';
-import { useUserStore } from './userStore';
+import type { Post, Comment, PostFilter, User } from '../types';
 
-interface CommunityStore {
+interface CommunityState {
   posts: Post[];
+  currentPost: Post | null;
+  comments: Comment[];
+  filter: PostFilter;
   isLoading: boolean;
-  filterLanguage: string | null;
-  fetchPosts: (language?: string) => Promise<void>;
-  createPost: (content: string, language: string) => Promise<void>;
+  error: string | null;
+
+  loadPosts: (filter?: PostFilter) => Promise<void>;
+  loadPost: (postId: string) => Promise<void>;
+  createPost: (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Post>;
   likePost: (postId: string) => Promise<void>;
-  setFilterLanguage: (language: string | null) => void;
+  loadComments: (postId: string) => Promise<void>;
+  addComment: (postId: string, user: User, content: string) => Promise<void>;
+  setFilter: (filter: Partial<PostFilter>) => void;
+  clearError: () => void;
 }
 
-export const useCommunityStore = create<CommunityStore>((set, get) => ({
-  posts: [],
-  isLoading: false,
-  filterLanguage: null,
+export const useCommunityStore = create<CommunityState>()(
+  persist(
+    (set, get) => ({
+      posts: [],
+      currentPost: null,
+      comments: [],
+      filter: { sortBy: 'latest' },
+      isLoading: false,
+      error: null,
 
-  fetchPosts: async (language?: string) => {
-    set({ isLoading: true });
-    try {
-      const posts = await communityService.getPosts(language || get().filterLanguage || undefined);
-      set({ posts, isLoading: false });
-    } catch {
-      set({ isLoading: false });
+      loadPosts: async (filter) => {
+        set({ isLoading: true, error: null });
+        try {
+          const posts = await communityService.getPosts(filter || get().filter);
+          set({ posts, isLoading: false });
+        } catch (error) {
+          set({ error: '加载失败', isLoading: false });
+        }
+      },
+
+      loadPost: async (postId) => {
+        set({ isLoading: true, error: null });
+        try {
+          const post = await communityService.getPost(postId);
+          set({ currentPost: post, isLoading: false });
+        } catch (error) {
+          set({ error: '加载失败', isLoading: false });
+        }
+      },
+
+      createPost: async (postData) => {
+        set({ isLoading: true, error: null });
+        try {
+          const post = await communityService.createPost(postData);
+          const posts = get().posts;
+          set({ posts: [post, ...posts], isLoading: false });
+          return post;
+        } catch (error) {
+          set({ error: '创建失败', isLoading: false });
+          throw error;
+        }
+      },
+
+      likePost: async (postId) => {
+        try {
+          const newLikes = await communityService.likePost(postId);
+          const posts = get().posts.map(p =>
+            p.id === postId ? { ...p, likes: newLikes } : p
+          );
+          const currentPost = get().currentPost;
+          set({
+            posts,
+            currentPost: currentPost?.id === postId
+              ? { ...currentPost, likes: newLikes }
+              : currentPost
+          });
+        } catch (error) {
+          set({ error: '点赞失败' });
+        }
+      },
+
+      loadComments: async (postId) => {
+        set({ isLoading: true });
+        try {
+          const comments = await communityService.getComments(postId);
+          set({ comments, isLoading: false });
+        } catch (error) {
+          set({ error: '加载失败', isLoading: false });
+        }
+      },
+
+      addComment: async (postId, user, content) => {
+        try {
+          const comment = await communityService.addComment(postId, user, content);
+          const comments = get().comments;
+          set({ comments: [...comments, comment] });
+
+          const posts = get().posts.map(p =>
+            p.id === postId ? { ...p, comments: p.comments + 1 } : p
+          );
+          const currentPost = get().currentPost;
+          set({
+            posts,
+            currentPost: currentPost?.id === postId
+              ? { ...currentPost, comments: currentPost.comments + 1 }
+              : currentPost
+          });
+        } catch (error) {
+          set({ error: '评论失败' });
+          throw error;
+        }
+      },
+
+      setFilter: (filter) => {
+        const currentFilter = get().filter;
+        const newFilter = { ...currentFilter, ...filter };
+        set({ filter: newFilter });
+      },
+
+      clearError: () => set({ error: null }),
+    }),
+    {
+      name: 'zhenxie-community-storage',
+      partialize: () => ({})
     }
-  },
-
-  createPost: async (content: string, language: string) => {
-    const user = useUserStore.getState().user;
-    if (!user) return;
-    
-    try {
-      const newPost = await communityService.createPost(content, language, user);
-      set(state => ({ posts: [newPost, ...state.posts] }));
-    } catch {
-      // Handle error silently
-    }
-  },
-
-  likePost: async (postId: string) => {
-    try {
-      await communityService.likePost(postId);
-      set(state => ({
-        posts: state.posts.map(p => 
-          p.id === postId 
-            ? { ...p, isLiked: !p.isLiked, likes: p.isLiked ? p.likes - 1 : p.likes + 1 }
-            : p
-        ),
-      }));
-    } catch {
-      // Handle error silently
-    }
-  },
-
-  setFilterLanguage: (language: string | null) => {
-    set({ filterLanguage: language });
-    get().fetchPosts();
-  },
-}));
+  )
+);

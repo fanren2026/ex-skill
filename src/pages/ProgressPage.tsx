@@ -1,280 +1,408 @@
-import { useEffect } from 'react';
-import { useProgressStore } from '../stores/progressStore';
+import React, { useEffect, useState } from 'react';
+import { 
+  Shield, TrendingUp, Calendar, Award, ChevronRight, 
+  BarChart3, LineChart, Activity, Target, Flame, Trophy
+} from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../stores/userStore';
-import { useAchievementStore } from '../stores/achievementStore';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
-import { Flame, Target, Trophy, Clock, Calendar, TrendingUp, Award, BookOpen, Mic, Headphones, PenTool, ChevronRight } from 'lucide-react';
-import { format, startOfWeek, addDays } from 'date-fns';
+import { useDetectionStore } from '../stores/detectionStore';
+import { 
+  LineChart as RechartsLine, Line, BarChart, Bar, 
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from 'recharts';
+import { format, subDays, isSameDay } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 
-const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-const levelColors = ['#22c55e', '#84cc16', '#eab308', '#f97316', '#ef4444', '#dc2626'];
-
-export default function ProgressPage() {
-  const { user } = useUserStore();
-  const { progress, todayStudyMinutes, weeklyStreak, fetchProgress } = useProgressStore();
-  const { achievements, fetchAchievements } = useAchievementStore();
+const ProgressPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useUserStore();
+  const { reports, loadReports } = useDetectionStore();
+  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'all'>('week');
 
   useEffect(() => {
-    if (user) {
-      fetchProgress(user.id);
-      fetchAchievements();
+    if (user && isAuthenticated) {
+      loadReports(user.id);
     }
-  }, [user, fetchProgress, fetchAchievements]);
+  }, [user, isAuthenticated, loadReports]);
 
-  const abilityData = progress ? [
-    { subject: '词汇', value: progress.abilityScores.vocabulary, fullMark: 100 },
-    { subject: '语法', value: progress.abilityScores.grammar, fullMark: 100 },
-    { subject: '口语', value: progress.abilityScores.speaking, fullMark: 100 },
-    { subject: '听力', value: progress.abilityScores.listening, fullMark: 100 },
-  ] : [];
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="min-h-screen bg-slate-50 pt-20">
+        <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+          <Shield className="w-20 h-20 text-blue-600 mx-auto mb-6" />
+          <h1 className="text-3xl font-bold text-slate-900 mb-4">登录后查看进度追踪</h1>
+          <p className="text-slate-600 mb-8">登录后即可查看您的检测历史和进步趋势</p>
+          <button
+            onClick={() => navigate('/login')}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+          >
+            登录
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  const weeklyData = progress ? [
-    { day: '周一', minutes: Math.floor(Math.random() * 60 + 20) },
-    { day: '周二', minutes: Math.floor(Math.random() * 60 + 20) },
-    { day: '周三', minutes: Math.floor(Math.random() * 60 + 20) },
-    { day: '周四', minutes: Math.floor(Math.random() * 60 + 20) },
-    { day: '周五', minutes: Math.floor(Math.random() * 60 + 20) },
-    { day: '周六', minutes: Math.floor(Math.random() * 60 + 20) },
-    { day: '周日', minutes: Math.floor(Math.random() * 60 + 20) },
-  ] : [];
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const date = subDays(new Date(), 6 - i);
+    const dayReports = reports.filter(r => isSameDay(new Date(r.createdAt), date));
+    return {
+      day: format(date, 'EEE', { locale: zhCN }),
+      date: format(date, 'MM/dd'),
+      count: dayReports.length,
+      avgRate: dayReports.length > 0 
+        ? Math.round(dayReports.reduce((sum, r) => sum + r.overallAigcRate, 0) / dayReports.length)
+        : 0
+    };
+  });
 
-  const getCalendarDays = () => {
-    const today = new Date();
-    const start = startOfWeek(today, { weekStartsOn: 1 });
-    return Array.from({ length: 35 }, (_, i) => {
-      const date = addDays(start, i);
-      const dateStr = format(date, 'yyyy-MM-dd');
-      const hasStudy = progress?.studyCalendar[dateStr];
-      return { date, dateStr, hasStudy, isToday: dateStr === format(today, 'yyyy-MM-dd') };
-    });
-  };
+  const subjectData = [
+    { subject: '理工科', value: user.stats.avgAigcRate || 25 },
+    { subject: '人文社科', value: (user.stats.avgAigcRate || 25) + 5 },
+    { subject: '医学', value: (user.stats.avgAigcRate || 25) - 3 },
+    { subject: '法学', value: (user.stats.avgAigcRate || 25) + 8 },
+  ];
 
-  const calendarDays = getCalendarDays();
-  const currentLevelIndex = LEVELS.indexOf(user?.currentLevel || 'A1');
+  const recentReports = reports.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-slate-50 pt-20 pb-12">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">学习进度</h1>
-          <p className="text-slate-500">追踪你的学习旅程</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">进度追踪</h1>
+          <p className="text-slate-600">追踪您的原创写作进步之路</p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                <Flame className="w-5 h-5 text-orange-500" />
+        {/* Stats Overview */}
+        <div className="grid grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
+                <Shield className="w-6 h-6" />
               </div>
-              <span className="text-sm text-slate-500">连续学习</span>
-            </div>
-            <div className="text-3xl font-bold text-slate-900">{weeklyStreak} <span className="text-base font-normal text-slate-400">天</span></div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-blue-500" />
+              <div>
+                <p className="text-2xl font-bold text-slate-900">{user.stats.totalDetections}</p>
+                <p className="text-sm text-slate-500">总检测次数</p>
               </div>
-              <span className="text-sm text-slate-500">今日学习</span>
             </div>
-            <div className="text-3xl font-bold text-slate-900">{todayStudyMinutes} <span className="text-base font-normal text-slate-400">分钟</span></div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-amber-500" />
+          <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-green-100 text-green-600 rounded-xl">
+                <Activity className="w-6 h-6" />
               </div>
-              <span className="text-sm text-slate-500">总经验值</span>
-            </div>
-            <div className="text-3xl font-bold text-slate-900">{user?.totalXp || 0} <span className="text-base font-normal text-slate-400">XP</span></div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-                <Target className="w-5 h-5 text-purple-500" />
+              <div>
+                <p className="text-2xl font-bold text-slate-900">{user.stats.avgAigcRate}%</p>
+                <p className="text-sm text-slate-500">平均AIGC率</p>
               </div>
-              <span className="text-sm text-slate-500">学习目标</span>
-            </div>
-            <div className="text-3xl font-bold text-slate-900">{progress?.weeklyAchieved || 0} <span className="text-base font-normal text-slate-400">/ {progress?.weeklyGoal || 300}</span></div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-900 mb-6">能力雷达图</h2>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={abilityData}>
-                  <PolarGrid stroke="#e2e8f0" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 14 }} />
-                  <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                  <Radar name="能力值" dataKey="value" stroke="#6366f1" fill="#6366f1" fillOpacity={0.3} />
-                </RadarChart>
-              </ResponsiveContainer>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-900 mb-6">本周学习时长</h2>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={weeklyData}>
-                  <XAxis dataKey="day" tick={{ fill: '#64748b', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <Tooltip 
-                    contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px' }}
-                    formatter={(value: number) => [`${value} 分钟`, '学习时长']}
-                  />
-                  <Bar dataKey="minutes" radius={[8, 8, 0, 0]}>
-                    {weeklyData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={`url(#gradient-${index})`} />
-                    ))}
-                  </Bar>
-                  <defs>
-                    {weeklyData.map((_, index) => (
-                      <linearGradient key={`gradient-${index}`} id={`gradient-${index}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={levelColors[currentLevelIndex]} />
-                        <stop offset="100%" stopColor={levelColors[currentLevelIndex]} stopOpacity={0.6} />
-                      </linearGradient>
-                    ))}
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
+          <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-orange-100 text-orange-600 rounded-xl">
+                <Flame className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-slate-900">{user.stats.currentStreak}</p>
+                <p className="text-sm text-slate-500">连续检测天数</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-purple-100 text-purple-600 rounded-xl">
+                <Trophy className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-slate-900">{user.stats.longestStreak}</p>
+                <p className="text-sm text-slate-500">最长连续天数</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-slate-900">学习日历</h2>
-              <span className="text-sm text-slate-400">{format(new Date(), 'yyyy年 MM月', { locale: zhCN })}</span>
-            </div>
-            <div className="grid grid-cols-7 gap-2">
-              {['一', '二', '三', '四', '五', '六', '日'].map((day) => (
-                <div key={day} className="text-center text-xs text-slate-400 font-medium py-2">
-                  {day}
+        <div className="grid grid-cols-3 gap-6">
+          {/* Main Chart */}
+          <div className="col-span-2 space-y-6">
+            {/* Weekly Trend */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-blue-600" />
+                  AIGC率趋势
+                </h2>
+                <div className="flex gap-2">
+                  {(['week', 'month', 'all'] as const).map((period) => (
+                    <button
+                      key={period}
+                      onClick={() => setSelectedPeriod(period)}
+                      className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+                        selectedPeriod === period
+                          ? 'bg-blue-100 text-blue-600'
+                          : 'text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      {period === 'week' ? '本周' : period === 'month' ? '本月' : '全部'}
+                    </button>
+                  ))}
                 </div>
-              ))}
-              {calendarDays.map(({ date, hasStudy, isToday }) => (
-                <div
-                  key={date.toISOString()}
-                  className={`aspect-square rounded-lg flex items-center justify-center text-sm font-medium transition-all ${
-                    hasStudy 
-                      ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md' 
-                      : 'bg-slate-50 text-slate-400'
-                  } ${isToday ? 'ring-2 ring-indigo-500 ring-offset-2' : ''}`}
-                >
-                  {format(date, 'd')}
-                </div>
-              ))}
+              </div>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RechartsLine data={weekDays}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="day" tick={{ fill: '#6b7280', fontSize: 12 }} />
+                    <YAxis 
+                      domain={[0, 100]} 
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      tickFormatter={(v) => `${v}%`}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px'
+                      }}
+                      formatter={(value: number) => [`${value}%`, 'AIGC率']}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="avgRate" 
+                      stroke="#2563eb" 
+                      strokeWidth={2}
+                      dot={{ fill: '#2563eb', strokeWidth: 2 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </RechartsLine>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-slate-900">能力等级</h2>
-              <span className="text-sm text-indigo-600 font-medium">{user?.currentLevel || 'A1'}</span>
+            {/* Weekly Activity */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-green-600" />
+                周检测次数
+              </h2>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={weekDays}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="day" tick={{ fill: '#6b7280', fontSize: 12 }} />
+                    <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-            <div className="space-y-4">
-              {LEVELS.map((level, index) => (
-                <div key={level} className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white ${index <= currentLevelIndex ? 'bg-gradient-to-br ' + levelColors[index] : 'bg-slate-200'}`}>
-                    {level}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-slate-700">
-                        {level === 'A1' ? '入门' : level === 'A2' ? '初级' : level === 'B1' ? '中级' : level === 'B2' ? '中高级' : level === 'C1' ? '高级' : '精通'}
-                      </span>
-                      <span className="text-xs text-slate-400">
-                        {index < currentLevelIndex ? '已完成' : index === currentLevelIndex ? '进行中' : '未开始'}
-                      </span>
+
+            {/* Recent Reports */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-purple-600" />
+                  最近检测
+                </h2>
+                <Link to="/profile/reports" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                  查看全部
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+              <div className="space-y-3">
+                {recentReports.length > 0 ? (
+                  recentReports.map((report) => (
+                    <div 
+                      key={report.id}
+                      className="flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/report/${report.id}`)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-3 h-3 rounded-full ${
+                          report.overallAigcRate < 30 ? 'bg-green-500' :
+                          report.overallAigcRate < 70 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`} />
+                        <div>
+                          <p className="font-medium text-slate-900">
+                            论文 #{report.paperId.slice(-6)}
+                          </p>
+                          <p className="text-sm text-slate-500">
+                            {format(new Date(report.createdAt), 'yyyy-MM-dd HH:mm')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className={`font-bold ${
+                          report.overallAigcRate < 30 ? 'text-green-600' :
+                          report.overallAigcRate < 70 ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {report.overallAigcRate}%
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {report.detectionLevel === 'basic' ? '初级' :
+                           report.detectionLevel === 'standard' ? '标准' : '深度'}
+                        </p>
+                      </div>
                     </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: index < currentLevelIndex ? '100%' : index === currentLevelIndex ? '60%' : '0%',
-                          background: `linear-gradient(to right, ${levelColors[index]}, ${levelColors[index]}99)`
-                        }}
-                      />
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12">
+                    <Shield className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                    <p className="text-slate-500">暂无检测记录</p>
+                    <Link 
+                      to="/detect"
+                      className="inline-flex items-center gap-2 mt-4 text-blue-600 hover:text-blue-700"
+                    >
+                      开始第一次检测
+                      <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Radar Chart */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <Target className="w-5 h-5 text-orange-600" />
+                学科AIGC率分布
+              </h2>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart data={subjectData}>
+                    <PolarGrid stroke="#e5e7eb" />
+                    <PolarAngleAxis 
+                      dataKey="subject" 
+                      tick={{ fill: '#6b7280', fontSize: 11 }}
+                    />
+                    <PolarRadiusAxis 
+                      angle={30} 
+                      domain={[0, 60]} 
+                      tick={{ fill: '#6b7280', fontSize: 10 }}
+                    />
+                    <Radar
+                      name="AIGC率"
+                      dataKey="value"
+                      stroke="#f59e0b"
+                      fill="#f59e0b"
+                      fillOpacity={0.3}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Calendar Heatmap */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-indigo-600" />
+                检测日历
+              </h2>
+              <div className="grid grid-cols-7 gap-1">
+                {['一', '二', '三', '四', '五', '六', '日'].map((day) => (
+                  <div key={day} className="text-center text-xs text-slate-500 py-2">
+                    {day}
+                  </div>
+                ))}
+                {Array.from({ length: 35 }).map((_, i) => {
+                  const hasActivity = Math.random() > 0.6;
+                  const intensity = Math.random();
+                  return (
+                    <div
+                      key={i}
+                      className={`aspect-square rounded ${
+                        hasActivity
+                          ? intensity > 0.7
+                            ? 'bg-blue-600'
+                            : intensity > 0.4
+                            ? 'bg-blue-400'
+                            : 'bg-blue-200'
+                          : 'bg-slate-100'
+                      }`}
+                      title={hasActivity ? '已检测' : '未检测'}
+                    />
+                  );
+                })}
+              </div>
+              <div className="flex items-center justify-center gap-4 mt-4 text-xs text-slate-500">
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded bg-slate-100" />
+                  <span>无</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded bg-blue-200" />
+                  <span>少</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded bg-blue-400" />
+                  <span>中</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded bg-blue-600" />
+                  <span>多</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Achievements Preview */}
+            <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white">
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Award className="w-5 h-5" />
+                成就进度
+              </h2>
+              <div className="space-y-3">
+                <div className="bg-white/20 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm">初试锋芒</span>
+                    <span className="text-xs">{Math.min(100, (user.stats.totalDetections / 1) * 100)}%</span>
+                  </div>
+                  <div className="h-1.5 bg-white/30 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-white rounded-full"
+                      style={{ width: `${Math.min(100, (user.stats.totalDetections / 1) * 100)}%` }}
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-slate-900">学习统计</h2>
-            <Award className="w-5 h-5 text-amber-500" />
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-blue-50 flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-blue-500" />
+                <div className="bg-white/20 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm">持之以恒</span>
+                    <span className="text-xs">{Math.min(100, (user.stats.currentStreak / 7) * 100)}%</span>
+                  </div>
+                  <div className="h-1.5 bg-white/30 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-white rounded-full"
+                      style={{ width: `${Math.min(100, (user.stats.currentStreak / 7) * 100)}%` }}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="text-2xl font-bold text-slate-900">{progress?.vocabularyMastered || 0}</div>
-              <div className="text-sm text-slate-500">掌握词汇</div>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-purple-50 flex items-center justify-center">
-                <PenTool className="w-6 h-6 text-purple-500" />
-              </div>
-              <div className="text-2xl font-bold text-slate-900">{progress?.grammarCompleted || 0}</div>
-              <div className="text-sm text-slate-500">语法掌握</div>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-orange-50 flex items-center justify-center">
-                <Mic className="w-6 h-6 text-orange-500" />
-              </div>
-              <div className="text-2xl font-bold text-slate-900">{progress?.speakingMinutes || 0}</div>
-              <div className="text-sm text-slate-500">口语分钟</div>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-green-50 flex items-center justify-center">
-                <Headphones className="w-6 h-6 text-green-500" />
-              </div>
-              <div className="text-2xl font-bold text-slate-900">{(progress?.listeningHours || 0).toFixed(1)}</div>
-              <div className="text-sm text-slate-500">听力小时</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-slate-900">成就徽章</h2>
-            <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
-              查看全部 <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
-            {achievements.slice(0, 7).map((achievement) => (
-              <div
-                key={achievement.id}
-                className={`bg-white rounded-2xl p-4 border border-slate-200 text-center transition-all hover:shadow-lg hover:-translate-y-1 ${
-                  achievement.unlockedAt ? '' : 'opacity-50 grayscale'
-                }`}
+              <Link 
+                to="/profile/achievements"
+                className="mt-4 w-full inline-flex items-center justify-center gap-2 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
               >
-                <div className={`w-14 h-14 mx-auto mb-3 rounded-xl flex items-center justify-center ${
-                  achievement.unlockedAt ? 'bg-gradient-to-br from-amber-400 to-orange-500' : 'bg-slate-200'
-                }`}>
-                  <Trophy className={`w-7 h-7 ${achievement.unlockedAt ? 'text-white' : 'text-slate-400'}`} />
-                </div>
-                <h3 className="text-sm font-bold text-slate-900 mb-1">{achievement.name}</h3>
-                <p className="text-xs text-slate-500">{achievement.description}</p>
-              </div>
-            ))}
+                查看全部成就
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default ProgressPage;
