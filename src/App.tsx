@@ -1,37 +1,35 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Header from './components/layout/Header';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import LearnPage from './pages/LearnPage';
+import DetectPage from './pages/DetectPage';
 import ProgressPage from './pages/ProgressPage';
 import CommunityPage from './pages/CommunityPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import Header from './components/layout/Header';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-slate-50">
-        <Routes>
-          <Route path="/auth/login" element={<LoginPage />} />
-          <Route path="/auth/register" element={<RegisterPage />} />
-          <Route
-            path="*"
-            element={
-              <>
-                <Header />
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/learn/:language/:level" element={<LearnPage />} />
-                  <Route path="/progress" element={<ProgressPage />} />
-                  <Route path="/community" element={<CommunityPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                </Routes>
-              </>
-            }
-          />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="*"
+          element={
+            <>
+              <Header />
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/detect" element={<DetectPage />} />
+                <Route path="/progress" element={<ProgressPage />} />
+                <Route path="/community" element={<CommunityPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Routes>
+            </>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }
