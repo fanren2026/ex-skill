@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, FileText, BarChart3, Users, Award, ChevronRight, CheckCircle2, Sparkles } from 'lucide-react';
-import { useUserStore } from '../stores/userStore';
 
 const HomePage: React.FC = () => {
-  const { isAuthenticated } = useUserStore();
   const [activeFeature, setActiveFeature] = useState<number>(0);
 
   const features = [
@@ -38,14 +36,12 @@ const HomePage: React.FC = () => {
     {
       name: '初级筛查',
       time: '<30秒/万字',
-      price: '免费',
       features: ['快速识别明显AI段落', 'AIGC概率百分比', '基础修改建议', '适合日常作业初审'],
       color: 'from-green-400 to-green-500'
     },
     {
       name: '标准检测',
       time: '<2分钟/万字',
-      price: '¥9.9/篇',
       features: ['语义连贯性分析', '修辞模式识别', '句子复杂度统计', '详细修改建议', '章节报告'],
       color: 'from-blue-500 to-blue-600',
       popular: true
@@ -53,7 +49,6 @@ const HomePage: React.FC = () => {
     {
       name: '深度检测',
       time: '<5分钟/万字',
-      price: '¥29.9/篇',
       features: ['同义词替换检测', '语序调整识别', '模板句式分析', '深度语义分析', '完整报告', '认证证书'],
       color: 'from-purple-500 to-purple-600'
     }
@@ -62,7 +57,7 @@ const HomePage: React.FC = () => {
   const stats = [
     { value: '100,000+', label: '已检测论文' },
     { value: '98.5%', label: '检测准确率' },
-    { value: '50,000+', label: '注册用户' },
+    { value: '50,000+', label: '活跃用户' },
     { value: '30+', label: '覆盖学科' }
   ];
 
@@ -80,16 +75,7 @@ const HomePage: React.FC = () => {
               <Link to="/detect" className="text-slate-600 hover:text-blue-600 transition-colors">论文检测</Link>
               <Link to="/progress" className="text-slate-600 hover:text-blue-600 transition-colors">进度追踪</Link>
               <Link to="/community" className="text-slate-600 hover:text-blue-600 transition-colors">社区</Link>
-            </div>
-            <div className="flex items-center gap-3">
-              {isAuthenticated ? (
-                <Link to="/profile" className="btn-primary">个人中心</Link>
-              ) : (
-                <>
-                  <Link to="/login" className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">登录</Link>
-                  <Link to="/register" className="btn-primary">免费注册</Link>
-                </>
-              )}
+              <Link to="/profile" className="text-slate-600 hover:text-blue-600 transition-colors">个人中心</Link>
             </div>
           </div>
         </div>
@@ -101,7 +87,7 @@ const HomePage: React.FC = () => {
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
-              专为学术研究者打造
+              完全免费 · 无需注册 · 即刻使用
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight">
               精准识别论文中的
@@ -112,8 +98,8 @@ const HomePage: React.FC = () => {
               帮助高校、期刊、科研机构提升原创写作能力
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to={isAuthenticated ? "/detect" : "/register"} className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30">
-                {isAuthenticated ? '开始检测' : '免费试用'}
+              <Link to="/detect" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30">
+                开始免费检测
                 <ChevronRight className="w-5 h-5" />
               </Link>
               <Link to="/community" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-colors border border-slate-200">
@@ -189,7 +175,7 @@ const HomePage: React.FC = () => {
                 ))}
               </div>
               <Link
-                to={isAuthenticated ? "/detect" : "/register"}
+                to="/detect"
                 className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
               >
                 立即体验
@@ -200,12 +186,12 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Detection Levels Section */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">灵活定价方案</h2>
-            <p className="text-lg text-slate-600">按需选择，适合不同检测场景</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">免费检测级别</h2>
+            <p className="text-lg text-slate-600">所有功能完全免费使用，无需注册</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -220,7 +206,7 @@ const HomePage: React.FC = () => {
               >
                 {level.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-600 text-white text-sm font-medium rounded-full">
-                    最受欢迎
+                    推荐使用
                   </div>
                 )}
                 <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${level.color} text-white mb-6`}>
@@ -228,8 +214,7 @@ const HomePage: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">{level.name}</h3>
                 <div className="flex items-baseline gap-1 mb-4">
-                  <span className="text-3xl font-bold text-slate-900">{level.price}</span>
-                  {level.price !== '免费' && <span className="text-slate-500">/篇</span>}
+                  <span className="text-3xl font-bold text-green-600">免费</span>
                 </div>
                 <p className="text-sm text-slate-500 mb-6">检测时间：{level.time}</p>
                 <ul className="space-y-3 mb-8">
@@ -241,14 +226,14 @@ const HomePage: React.FC = () => {
                   ))}
                 </ul>
                 <Link
-                  to={isAuthenticated ? "/detect" : "/register"}
+                  to="/detect"
                   className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors ${
                     level.popular
                       ? 'bg-blue-600 text-white hover:bg-blue-700'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
-                  {level.price === '免费' ? '免费使用' : '立即购买'}
+                  立即使用
                 </Link>
               </div>
             ))}
@@ -261,12 +246,12 @@ const HomePage: React.FC = () => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">开始您的原创之旅</h2>
-            <p className="text-xl text-blue-100 mb-8">注册即送3次免费检测机会，帮助您了解论文的AIGC情况</p>
+            <p className="text-xl text-blue-100 mb-8">完全免费，无需注册，即可体验专业论文AIGC检测</p>
             <Link
-              to={isAuthenticated ? "/detect" : "/register"}
+              to="/detect"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 rounded-xl font-medium hover:bg-blue-50 transition-colors shadow-lg"
             >
-              {isAuthenticated ? '开始检测' : '立即注册'}
+              立即开始检测
               <ChevronRight className="w-5 h-5" />
             </Link>
           </div>

@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { 
-  Shield, FileText, Upload, Clock, CheckCircle2, AlertCircle, 
+  Shield, FileText, Clock, CheckCircle2, AlertCircle, 
   ChevronRight, Loader2, BarChart3, BookOpen, Scale, Microscope,
-  FileCheck, Download, Share2, Copy, RefreshCw
+  FileCheck, Download, Share2, RefreshCw, Sparkles
 } from 'lucide-react';
-import { useUserStore } from '../stores/userStore';
 import { useDetectionStore } from '../stores/detectionStore';
 import type { DetectionLevel, SubjectType } from '../types';
 
 const DetectPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { user, isAuthenticated } = useUserStore();
   const { 
     submitPaper, 
     startDetection, 
@@ -19,7 +15,8 @@ const DetectPage: React.FC = () => {
     currentReport, 
     isDetecting, 
     progress, 
-    reset 
+    reset,
+    setProgress
   } = useDetectionStore();
 
   const [title, setTitle] = useState('');
@@ -27,6 +24,7 @@ const DetectPage: React.FC = () => {
   const [detectionLevel, setDetectionLevel] = useState<DetectionLevel>('standard');
   const [subject, setSubject] = useState<SubjectType>('science');
   const [showReport, setShowReport] = useState(false);
+  const [guestId] = useState(() => `guest_${Date.now()}`);
 
   const levels: { value: DetectionLevel; name: string; time: string; features: string[] }[] = [
     {
@@ -63,16 +61,11 @@ const DetectPage: React.FC = () => {
       return;
     }
 
-    if (!isAuthenticated || !user) {
-      navigate('/login');
-      return;
-    }
-
     const wordCount = content.trim().length;
     
     try {
       const paper = await submitPaper({
-        userId: user.id,
+        userId: guestId,
         title,
         content,
         wordCount,
@@ -82,6 +75,7 @@ const DetectPage: React.FC = () => {
         version: 1
       });
 
+      setProgress(0);
       await startDetection(paper.id, detectionLevel);
       setShowReport(true);
     } catch (error) {
@@ -114,25 +108,6 @@ const DetectPage: React.FC = () => {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-slate-50 pt-20">
-        <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-          <Shield className="w-20 h-20 text-blue-600 mx-auto mb-6" />
-          <h1 className="text-3xl font-bold text-slate-900 mb-4">登录后使用论文检测</h1>
-          <p className="text-slate-600 mb-8">登录后即可体验完整的论文AIGC检测功能</p>
-          <button
-            onClick={() => navigate('/login')}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-          >
-            登录
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   if (showReport && currentReport) {
     return (
       <div className="min-h-screen bg-slate-50 pt-20 pb-12">
@@ -141,7 +116,7 @@ const DetectPage: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-2">{currentPaper?.title}</h1>
+                <h1 className="text-2xl font-bold text-slate-900 mb-2">{currentPaper?.title || '论文检测报告'}</h1>
                 <p className="text-slate-600">
                   检测时间：{new Date(currentReport.createdAt).toLocaleString('zh-CN')}
                   <span className="mx-3">|</span>
@@ -347,7 +322,7 @@ const DetectPage: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">论文检测</h1>
-          <p className="text-slate-600">上传您的论文，获取专业的AIGC率分析报告</p>
+          <p className="text-slate-600">完全免费，无需注册，即可获得专业的AIGC率分析报告</p>
         </div>
 
         <div className="grid grid-cols-3 gap-6">
@@ -441,7 +416,10 @@ const DetectPage: React.FC = () => {
           <div className="space-y-6">
             {/* Start Detection */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
-              <h3 className="font-bold text-slate-900 mb-4">开始检测</h3>
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="w-5 h-5 text-green-600" />
+                <h3 className="font-bold text-slate-900">完全免费</h3>
+              </div>
               <div className="space-y-4">
                 <div className="p-4 bg-slate-50 rounded-lg">
                   <div className="flex items-center justify-between mb-2">
@@ -470,7 +448,7 @@ const DetectPage: React.FC = () => {
                   ) : (
                     <>
                       <Shield className="w-5 h-5" />
-                      开始检测
+                      开始免费检测
                     </>
                   )}
                 </button>
@@ -496,43 +474,34 @@ const DetectPage: React.FC = () => {
             )}
 
             {/* Tips */}
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6">
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6">
               <h3 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-blue-600" />
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
                 检测小贴士
               </h3>
               <ul className="space-y-2 text-sm text-slate-600">
                 <li>• 建议上传完整论文以获得最准确的结果</li>
                 <li>• 深度检测可发现经过改写的AI内容</li>
                 <li>• 检测结果仅供参考，请以实际审查为准</li>
+                <li>• 完全免费，无需注册</li>
               </ul>
             </div>
 
-            {/* User Info */}
+            {/* Features */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
-              <h3 className="font-bold text-slate-900 mb-4">当前用户</h3>
-              <div className="flex items-center gap-3">
-                <img 
-                  src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.nickname}`}
-                  alt="avatar"
-                  className="w-10 h-10 rounded-full bg-slate-200"
-                />
-                <div>
-                  <p className="font-medium text-slate-900">{user?.nickname}</p>
-                  <p className="text-xs text-slate-500">{user?.email}</p>
-                </div>
-              </div>
-              <div className="mt-4 pt-4 border-t border-slate-200">
-                <div className="grid grid-cols-2 gap-4 text-center">
-                  <div>
-                    <p className="text-2xl font-bold text-blue-600">{user?.stats.totalDetections || 0}</p>
-                    <p className="text-xs text-slate-500">检测次数</p>
+              <h3 className="font-bold text-slate-900 mb-4">检测功能</h3>
+              <div className="space-y-3">
+                {[
+                  { icon: <BarChart3 className="w-5 h-5" />, text: '全文热力图' },
+                  { icon: <Microscope className="w-5 h-5" />, text: 'AI特征检测' },
+                  { icon: <Scale className="w-5 h-5" />, text: '逻辑漏洞扫描' },
+                  { icon: <FileCheck className="w-5 h-5" />, text: '修改建议' },
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                    <div className="text-blue-600">{item.icon}</div>
+                    <span className="text-sm text-slate-700">{item.text}</span>
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-green-600">{user?.stats.avgAigcRate || 0}%</p>
-                    <p className="text-xs text-slate-500">平均AIGC率</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

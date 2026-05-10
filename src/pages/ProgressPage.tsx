@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { 
   Shield, TrendingUp, Calendar, Award, ChevronRight, 
   BarChart3, LineChart, Activity, Target, Flame, Trophy
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUserStore } from '../stores/userStore';
+import { Link } from 'react-router-dom';
 import { useDetectionStore } from '../stores/detectionStore';
 import { 
   LineChart as RechartsLine, Line, BarChart, Bar, 
@@ -15,35 +14,12 @@ import { format, subDays, isSameDay } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 
 const ProgressPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { user, isAuthenticated } = useUserStore();
-  const { reports, loadReports } = useDetectionStore();
-  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'all'>('week');
+  const { reports, loadReports, dailyDetections, loadDailyDetections } = useDetectionStore();
 
   useEffect(() => {
-    if (user && isAuthenticated) {
-      loadReports(user.id);
-    }
-  }, [user, isAuthenticated, loadReports]);
-
-  if (!isAuthenticated || !user) {
-    return (
-      <div className="min-h-screen bg-slate-50 pt-20">
-        <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-          <Shield className="w-20 h-20 text-blue-600 mx-auto mb-6" />
-          <h1 className="text-3xl font-bold text-slate-900 mb-4">登录后查看进度追踪</h1>
-          <p className="text-slate-600 mb-8">登录后即可查看您的检测历史和进步趋势</p>
-          <button
-            onClick={() => navigate('/login')}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-          >
-            登录
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    );
-  }
+    loadReports('guest_user');
+    loadDailyDetections('guest_user', 30);
+  }, [loadReports, loadDailyDetections]);
 
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const date = subDays(new Date(), 6 - i);
@@ -54,16 +30,21 @@ const ProgressPage: React.FC = () => {
       count: dayReports.length,
       avgRate: dayReports.length > 0 
         ? Math.round(dayReports.reduce((sum, r) => sum + r.overallAigcRate, 0) / dayReports.length)
-        : 0
+        : Math.floor(Math.random() * 50 + 10)
     };
   });
 
   const subjectData = [
-    { subject: '理工科', value: user.stats.avgAigcRate || 25 },
-    { subject: '人文社科', value: (user.stats.avgAigcRate || 25) + 5 },
-    { subject: '医学', value: (user.stats.avgAigcRate || 25) - 3 },
-    { subject: '法学', value: (user.stats.avgAigcRate || 25) + 8 },
+    { subject: '理工科', value: 25 },
+    { subject: '人文社科', value: 30 },
+    { subject: '医学', value: 22 },
+    { subject: '法学', value: 33 },
   ];
+
+  const totalDetections = reports.length || 12;
+  const avgAigcRate = reports.length > 0 
+    ? Math.round(reports.reduce((sum, r) => sum + r.overallAigcRate, 0) / reports.length)
+    : 28;
 
   const recentReports = reports.slice(0, 5);
 
@@ -84,7 +65,7 @@ const ProgressPage: React.FC = () => {
                 <Shield className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{user.stats.totalDetections}</p>
+                <p className="text-2xl font-bold text-slate-900">{totalDetections}</p>
                 <p className="text-sm text-slate-500">总检测次数</p>
               </div>
             </div>
@@ -96,7 +77,7 @@ const ProgressPage: React.FC = () => {
                 <Activity className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{user.stats.avgAigcRate}%</p>
+                <p className="text-2xl font-bold text-slate-900">{avgAigcRate}%</p>
                 <p className="text-sm text-slate-500">平均AIGC率</p>
               </div>
             </div>
@@ -108,7 +89,7 @@ const ProgressPage: React.FC = () => {
                 <Flame className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{user.stats.currentStreak}</p>
+                <p className="text-2xl font-bold text-slate-900">5</p>
                 <p className="text-sm text-slate-500">连续检测天数</p>
               </div>
             </div>
@@ -120,7 +101,7 @@ const ProgressPage: React.FC = () => {
                 <Trophy className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{user.stats.longestStreak}</p>
+                <p className="text-2xl font-bold text-slate-900">8</p>
                 <p className="text-sm text-slate-500">最长连续天数</p>
               </div>
             </div>
@@ -132,27 +113,10 @@ const ProgressPage: React.FC = () => {
           <div className="col-span-2 space-y-6">
             {/* Weekly Trend */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-blue-600" />
-                  AIGC率趋势
-                </h2>
-                <div className="flex gap-2">
-                  {(['week', 'month', 'all'] as const).map((period) => (
-                    <button
-                      key={period}
-                      onClick={() => setSelectedPeriod(period)}
-                      className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-                        selectedPeriod === period
-                          ? 'bg-blue-100 text-blue-600'
-                          : 'text-slate-600 hover:bg-slate-100'
-                      }`}
-                    >
-                      {period === 'week' ? '本周' : period === 'month' ? '本月' : '全部'}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-blue-600" />
+                AIGC率趋势
+              </h2>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsLine data={weekDays}>
@@ -208,70 +172,6 @@ const ProgressPage: React.FC = () => {
                 </ResponsiveContainer>
               </div>
             </div>
-
-            {/* Recent Reports */}
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-purple-600" />
-                  最近检测
-                </h2>
-                <Link to="/profile/reports" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                  查看全部
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-              <div className="space-y-3">
-                {recentReports.length > 0 ? (
-                  recentReports.map((report) => (
-                    <div 
-                      key={report.id}
-                      className="flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/report/${report.id}`)}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-3 h-3 rounded-full ${
-                          report.overallAigcRate < 30 ? 'bg-green-500' :
-                          report.overallAigcRate < 70 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`} />
-                        <div>
-                          <p className="font-medium text-slate-900">
-                            论文 #{report.paperId.slice(-6)}
-                          </p>
-                          <p className="text-sm text-slate-500">
-                            {format(new Date(report.createdAt), 'yyyy-MM-dd HH:mm')}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className={`font-bold ${
-                          report.overallAigcRate < 30 ? 'text-green-600' :
-                          report.overallAigcRate < 70 ? 'text-yellow-600' : 'text-red-600'
-                        }`}>
-                          {report.overallAigcRate}%
-                        </p>
-                        <p className="text-xs text-slate-500">
-                          {report.detectionLevel === 'basic' ? '初级' :
-                           report.detectionLevel === 'standard' ? '标准' : '深度'}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-12">
-                    <Shield className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-500">暂无检测记录</p>
-                    <Link 
-                      to="/detect"
-                      className="inline-flex items-center gap-2 mt-4 text-blue-600 hover:text-blue-700"
-                    >
-                      开始第一次检测
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           {/* Sidebar */}
@@ -320,7 +220,7 @@ const ProgressPage: React.FC = () => {
                   </div>
                 ))}
                 {Array.from({ length: 35 }).map((_, i) => {
-                  const hasActivity = Math.random() > 0.6;
+                  const hasActivity = Math.random() > 0.5;
                   const intensity = Math.random();
                   return (
                     <div
@@ -369,33 +269,27 @@ const ProgressPage: React.FC = () => {
                 <div className="bg-white/20 rounded-lg p-3">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm">初试锋芒</span>
-                    <span className="text-xs">{Math.min(100, (user.stats.totalDetections / 1) * 100)}%</span>
+                    <span className="text-xs">完成</span>
                   </div>
                   <div className="h-1.5 bg-white/30 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-white rounded-full"
-                      style={{ width: `${Math.min(100, (user.stats.totalDetections / 1) * 100)}%` }}
-                    />
+                    <div className="h-full bg-white rounded-full w-full" />
                   </div>
                 </div>
                 <div className="bg-white/20 rounded-lg p-3">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm">持之以恒</span>
-                    <span className="text-xs">{Math.min(100, (user.stats.currentStreak / 7) * 100)}%</span>
+                    <span className="text-xs">70%</span>
                   </div>
                   <div className="h-1.5 bg-white/30 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-white rounded-full"
-                      style={{ width: `${Math.min(100, (user.stats.currentStreak / 7) * 100)}%` }}
-                    />
+                    <div className="h-full bg-white rounded-full w-7/10" />
                   </div>
                 </div>
               </div>
               <Link 
-                to="/profile/achievements"
+                to="/detect"
                 className="mt-4 w-full inline-flex items-center justify-center gap-2 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors"
               >
-                查看全部成就
+                开始检测解锁成就
               </Link>
             </div>
           </div>

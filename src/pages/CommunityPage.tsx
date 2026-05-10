@@ -3,15 +3,12 @@ import {
   Shield, Search, Plus, MessageCircle, ThumbsUp, Eye, 
   Pin, Award, Filter, ChevronRight, X, Send
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUserStore } from '../stores/userStore';
+import { Link } from 'react-router-dom';
 import { useCommunityStore } from '../stores/communityStore';
 import { format } from 'date-fns';
 import type { PostCategory, SubjectType } from '../types';
 
 const CommunityPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { user, isAuthenticated } = useUserStore();
   const { 
     posts, 
     loadPosts, 
@@ -48,12 +45,22 @@ const CommunityPage: React.FC = () => {
   ];
 
   const handleCreatePost = async () => {
-    if (!user || !newPostTitle.trim() || !newPostContent.trim()) return;
+    if (!newPostTitle.trim() || !newPostContent.trim()) return;
 
     try {
       await createPost({
-        userId: user.id,
-        user,
+        userId: 'guest_user',
+        user: {
+          id: 'guest_user',
+          email: 'guest@example.com',
+          nickname: '游客用户',
+          userType: 'personal',
+          role: 'normal',
+          achievements: [],
+          stats: { totalDetections: 0, totalPapers: 0, avgAigcRate: 0, currentStreak: 0, longestStreak: 0, weeklyDetections: [0,0,0,0,0,0,0] },
+          createdAt: new Date().toISOString(),
+          lastLoginAt: new Date().toISOString(),
+        },
         title: newPostTitle,
         content: newPostContent,
         category: newPostCategory,
@@ -74,10 +81,6 @@ const CommunityPage: React.FC = () => {
   };
 
   const handleLike = async (postId: string) => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
     await likePost(postId);
   };
 
@@ -108,15 +111,13 @@ const CommunityPage: React.FC = () => {
             <h1 className="text-3xl font-bold text-slate-900 mb-2">社区</h1>
             <p className="text-slate-600">分享降AI技巧，讨论学术写作</p>
           </div>
-          {isAuthenticated && (
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-            >
-              <Plus className="w-5 h-5" />
-              发布帖子
-            </button>
-          )}
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            发布帖子
+          </button>
         </div>
 
         <div className="grid grid-cols-4 gap-6">
@@ -232,13 +233,10 @@ const CommunityPage: React.FC = () => {
                       <ThumbsUp className="w-5 h-5" />
                       <span>{post.likes}</span>
                     </button>
-                    <Link 
-                      to={`/community/${post.id}`}
-                      className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors"
-                    >
+                    <div className="flex items-center gap-2 text-slate-500">
                       <MessageCircle className="w-5 h-5" />
                       <span>{post.comments}</span>
-                    </Link>
+                    </div>
                     <div className="flex items-center gap-2 text-slate-500">
                       <Eye className="w-5 h-5" />
                       <span>{post.views}</span>
@@ -251,18 +249,12 @@ const CommunityPage: React.FC = () => {
                 <div className="bg-white rounded-2xl shadow-sm p-12 text-center">
                   <MessageCircle className="w-16 h-16 text-slate-300 mx-auto mb-4" />
                   <p className="text-slate-500 mb-4">暂无帖子</p>
-                  {isAuthenticated ? (
-                    <button
-                      onClick={() => setShowCreateModal(true)}
-                      className="text-blue-600 hover:text-blue-700 font-medium"
-                    >
-                      成为第一个发帖的人
-                    </button>
-                  ) : (
-                    <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
-                      登录后发布帖子
-                    </Link>
-                  )}
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    成为第一个发帖的人
+                  </button>
                 </div>
               )}
             </div>
@@ -270,41 +262,17 @@ const CommunityPage: React.FC = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* User Card */}
-            {isAuthenticated && user ? (
-              <div className="bg-white rounded-2xl shadow-sm p-6">
-                <div className="text-center mb-4">
-                  <img 
-                    src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.nickname}`}
-                    alt={user.nickname}
-                    className="w-16 h-16 rounded-full mx-auto mb-3 bg-slate-200"
-                  />
-                  <h3 className="font-bold text-slate-900">{user.nickname}</h3>
-                  <p className="text-sm text-slate-500">{user.email}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-center">
-                  <div>
-                    <p className="text-xl font-bold text-blue-600">{user.stats.totalDetections}</p>
-                    <p className="text-xs text-slate-500">检测次数</p>
-                  </div>
-                  <div>
-                    <p className="text-xl font-bold text-green-600">{user.achievements.length}</p>
-                    <p className="text-xs text-slate-500">成就数</p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white">
-                <h3 className="font-bold mb-2">加入社区</h3>
-                <p className="text-sm text-blue-100 mb-4">登录后可以发布帖子、评论互动</p>
-                <Link
-                  to="/login"
-                  className="block w-full py-2 bg-white text-blue-600 rounded-lg font-medium text-center hover:bg-blue-50 transition-colors"
-                >
-                  登录
-                </Link>
-              </div>
-            )}
+            {/* Welcome Card */}
+            <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white">
+              <h3 className="font-bold mb-2">欢迎来到社区</h3>
+              <p className="text-sm text-blue-100 mb-4">在这里分享您的降AI技巧，与同行交流学术写作经验</p>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="w-full py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors"
+              >
+                发布帖子
+              </button>
+            </div>
 
             {/* Categories */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
