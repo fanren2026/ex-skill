@@ -1,0 +1,18 @@
+<launch>
+  <param name="robot_description" command="$(find xacro)/xacro $(find demo2)/urdf/robot.xacro" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find gazebo_ros)/worlds/empty.world" />
+    <arg name="paused" value="false" />
+    <arg name="use_sim_time" value="true" />
+    <arg name="gui" value="true" />
+  </include>
+
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-urdf -model demo2_robot -param robot_description" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find demo2)/rviz/config.rviz" />
+
+  <node name="obstacle_avoid" pkg="demo2" type="obstacle_avoid.py" output="screen" />
+</launch>
