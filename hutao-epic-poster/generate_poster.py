@@ -491,17 +491,26 @@ def create_postcard():
     return final
 
 if __name__ == "__main__":
+    import os
+    # 获取脚本所在目录
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
     print("开始生成胡桃主题海报...")
     poster = create_postcard()
     
-    # 保存图片
-    output_path = "/workspace/hutao-epic-poster/hutao_poster.png"
+    # 使用相对路径保存图片
+    output_path = os.path.join(script_dir, "hutao_poster.png")
     poster.save(output_path, "PNG", quality=95)
     print(f"海报已保存到: {output_path}")
     
     # 也保存一份JPG版本
-    output_path_jpg = "/workspace/hutao-epic-poster/hutao_poster.jpg"
-    poster.save(output_path_jpg, "JPEG", quality=95)
+    output_path_jpg = os.path.join(script_dir, "hutao_poster.jpg")
+    # 转换为RGB模式保存JPG
+    if poster.mode == 'RGBA':
+        poster_rgb = poster.convert('RGB')
+        poster_rgb.save(output_path_jpg, "JPEG", quality=95)
+    else:
+        poster.save(output_path_jpg, "JPEG", quality=95)
     print(f"海报(JPG)已保存到: {output_path_jpg}")
     
     print("海报生成完成!")
