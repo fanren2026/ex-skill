@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社区交流 - SkillDistill</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="community.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2L35 12V28L20 38L5 28V12L20 2Z" stroke="url(#logoGradient)" stroke-width="2" fill="none"/>
+                        <path d="M20 8L28 14V26L20 32L12 26V14L20 8Z" fill="url(#logoGradient)" opacity="0.3"/>
+                        <circle cx="20" cy="20" r="4" fill="url(#logoGradient)"/>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="5" y1="2" x2="35" y2="38" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#8b5cf6"/>
+                                <stop offset="1" stop-color="#6366f1"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="logo-text">SkillDistill</span>
+            </a>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="index.html#levels" class="nav-link">分层体系</a>
+                <a href="index.html#modules" class="nav-link">蒸馏模块</a>
+                <a href="progress.html" class="nav-link">进度追踪</a>
+                <a href="community.html" class="nav-link active">社区</a>
+                <a href="badges.html" class="nav-link">成就</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Community Header -->
+    <section class="community-header">
+        <div class="container">
+            <h1>社区交流中心</h1>
+            <p>与同行交流经验，分享学习心得，共同成长进步</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="community-main">
+        <div class="container">
+            <div class="community-layout">
+                <!-- Left Sidebar -->
+                <aside class="community-sidebar">
+                    <div class="sidebar-section">
+                        <h3>社区导航</h3>
+                        <nav class="community-nav">
+                            <a href="#discussions" class="community-nav-item active" data-tab="discussions">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M18 10C18 14.4183 14.4183 18 10 18C5.58172 18 2 14.4183 2 10C2 5.58172 5.58172 2 10 2C10.2 2 10.4 2.01 10.6 2.03C10.2 3.17 10 4.47 10 5.9C7.59 5.6 5.21 6.42 3.49 7.95L1 10L3.49 12.05C5.21 13.58 7.59 14.4 10 14.1C10 15.53 10.2 16.83 10.6 17.97C10.4 17.99 10.2 18 10 18C14.4183 18 18 14.4183 18 10Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                讨论区
+                            </a>
+                            <a href="#shared" class="community-nav-item" data-tab="shared">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M17 10L12 5M17 10L12 15M17 10H7M7 3L3 10L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                经验分享
+                            </a>
+                            <a href="#qa" class="community-nav-item" data-tab="qa">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M10 6V10M10 14H10.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                问答中心
+                            </a>
+                            <a href="#leaders" class="community-nav-item" data-tab="leaders">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M10 2L12.5 7.5L18 8L14 12L15 18L10 15L5 18L6 12L2 8L7.5 7.5L10 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                                </svg>
+                                达人榜
+                            </a>
+                        </nav>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h3>热门话题</h3>
+                        <div class="hot-topics">
+                            <span class="topic-tag">职场沟通</span>
+                            <span class="topic-tag">数据分析</span>
+                            <span class="topic-tag">时间管理</span>
+                            <span class="topic-tag">项目管理</span>
+                            <span class="topic-tag">Python</span>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <button class="btn btn-primary" id="newPostBtn" style="width: 100%;">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            发布新帖
+                        </button>
+                    </div>
+                </aside>
+                
+                <!-- Main Content Area -->
+                <main class="community-content">
+                    <!-- Discussions Tab -->
+                    <div class="tab-content active" id="discussions">
+                        <div class="posts-list" id="postsList">
+                            <!-- Posts will be loaded dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Shared Tab -->
+                    <div class="tab-content" id="shared">
+                        <div class="section-title-bar">
+                            <h2>学习心得分享</h2>
+                            <div class="filter-options">
+                                <select id="sharedFilter" class="filter-select">
+                                    <option value="latest">最新</option>
+                                    <option value="popular">最热</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="shared-list" id="sharedList">
+                            <!-- Shared posts will be loaded dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Q&A Tab -->
+                    <div class="tab-content" id="qa">
+                        <div class="section-title-bar">
+                            <h2>问题与解答</h2>
+                            <button class="btn btn-secondary" id="askQuestionBtn">
+                                提问题
+                            </button>
+                        </div>
+                        <div class="qa-list" id="qaList">
+                            <!-- Q&A posts will be loaded dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Leaders Tab -->
+                    <div class="tab-content" id="leaders">
+                        <div class="section-title-bar">
+                            <h2>蒸馏达人榜</h2>
+                        </div>
+                        <div class="leaders-list" id="leadersList">
+                            <!-- Leaders will be loaded dynamically -->
+                        </div>
+                    </div>
+                </main>
+                
+                <!-- Right Sidebar -->
+                <aside class="community-sidebar-right">
+                    <div class="sidebar-section">
+                        <h3>社区统计</h3>
+                        <div class="community-stats">
+                            <div class="stat-row">
+                                <span class="stat-label">在线用户</span>
+                                <span class="stat-value">1,247</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">今日发帖</span>
+                                <span class="stat-value">89</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">总话题数</span>
+                                <span class="stat-value">3,456</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h3>我的社区积分</h3>
+                        <div class="my-points">
+                            <div class="points-value" id="myPoints">0</div>
+                            <div class="points-label">积分</div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h3>最近活跃</h3>
+                        <div class="recent-activity" id="recentActivity">
+                            <!-- Recent activity will be loaded -->
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Post Modal -->
+    <div class="modal-overlay hidden" id="postModal">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3 id="modalTitle">发布新帖</h3>
+                <button class="modal-close" id="closeModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-content">
+                <form id="postForm">
+                    <div class="form-group">
+                        <label for="postTitle">标题</label>
+                        <input type="text" id="postTitle" placeholder="请输入帖子标题" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="postCategory">分类</label>
+                        <select id="postCategory" required>
+                            <option value="">请选择分类</option>
+                            <option value="discussion">讨论区</option>
+                            <option value="shared">经验分享</option>
+                            <option value="qa">问答</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="postContent">内容</label>
+                        <textarea id="postContent" rows="10" placeholder="请输入帖子内容..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="postTags">标签</label>
+                        <input type="text" id="postTags" placeholder="多个标签用逗号分隔，如：职场沟通,数据分析">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelPostBtn">取消</button>
+                <button class="btn btn-primary" id="submitPostBtn">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 SkillDistill. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="community.js"></script>
+</body>
+</html>

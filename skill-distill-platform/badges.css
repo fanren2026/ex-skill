@@ -1,0 +1,474 @@
+/* Badges Page Styles */
+
+/* Badges Header */
+.badges-header {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-deep));
+    padding: 120px 0 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.badges-header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-3);
+}
+
+.badges-header p {
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+}
+
+/* Achievement Summary */
+.achievement-summary {
+    padding: var(--space-10) 0;
+    background: var(--primary-dark);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+}
+
+.summary-card {
+    background: var(--primary-light);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    transition: all var(--transition-base);
+}
+
+.summary-card:hover {
+    border-color: var(--gold-primary);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.15);
+}
+
+.summary-icon {
+    flex-shrink: 0;
+}
+
+.summary-content {
+    flex-grow: 1;
+}
+
+.summary-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+    line-height: 1;
+}
+
+.summary-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: var(--space-1);
+}
+
+/* Badges Main */
+.badges-main {
+    padding: var(--space-10) 0;
+    min-height: 60vh;
+}
+
+.badges-tabs {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.badge-tab {
+    padding: var(--space-3) var(--space-6);
+    background: var(--primary-dark);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: all var(--transition-base);
+}
+
+.badge-tab:hover {
+    border-color: var(--gold-primary);
+    color: var(--gold-primary);
+}
+
+.badge-tab.active {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+    color: var(--primary-deep);
+    border-color: var(--gold-primary);
+}
+
+.badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-6);
+}
+
+.badge-card {
+    background: var(--primary-dark);
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    text-align: center;
+    transition: all var(--transition-base);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.badge-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.badge-card:hover::before {
+    opacity: 1;
+}
+
+.badge-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold-primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.badge-card.locked {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+
+.badge-card.locked:hover {
+    transform: none;
+    border-color: var(--border-subtle);
+}
+
+.badge-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.badge-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.badge-card.gold .badge-icon {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+    box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
+}
+
+.badge-card.silver .badge-icon {
+    background: linear-gradient(135deg, #9ca3af, #6b7280);
+    box-shadow: 0 4px 20px rgba(156, 163, 175, 0.4);
+}
+
+.badge-card.bronze .badge-icon {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    box-shadow: 0 4px 20px rgba(217, 119, 6, 0.4);
+}
+
+.badge-card.crystal .badge-icon {
+    background: linear-gradient(135deg, var(--accent-gradient), var(--accent-crystal));
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+}
+
+.badge-card.locked .badge-icon {
+    background: var(--primary-light);
+    box-shadow: none;
+}
+
+.badge-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.badge-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+}
+
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.badge-status.earned {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success-green);
+}
+
+.badge-status.locked {
+    background: var(--primary-light);
+    color: var(--text-muted);
+}
+
+.badge-reward {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.875rem;
+    color: var(--gold-primary);
+}
+
+/* Tasks Section */
+.tasks-section {
+    padding: var(--space-16) 0;
+    background: var(--primary-dark);
+}
+
+.tasks-section h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: var(--space-3);
+}
+
+.tasks-section .section-description {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-8);
+}
+
+.tasks-list {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.task-card {
+    background: var(--primary-light);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    transition: all var(--transition-base);
+}
+
+.task-card:hover {
+    border-color: var(--accent-crystal);
+    transform: translateX(4px);
+}
+
+.task-card.completed {
+    opacity: 0.7;
+}
+
+.task-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.task-card.completed .task-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-green);
+}
+
+.task-content {
+    flex-grow: 1;
+}
+
+.task-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.task-description {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.task-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-2);
+}
+
+.task-reward {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--gold-primary);
+    font-weight: 600;
+}
+
+.task-action {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.task-action.primary {
+    background: linear-gradient(135deg, var(--accent-gradient), var(--accent-crystal));
+    color: white;
+}
+
+.task-action.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.task-action.completed {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success-green);
+    cursor: default;
+}
+
+/* Modal */
+.badge-detail {
+    text-align: center;
+}
+
+.badge-detail-icon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto var(--space-6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-detail-icon svg {
+    width: 64px;
+    height: 64px;
+}
+
+.badge-detail-icon.gold {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+    box-shadow: 0 8px 30px rgba(251, 191, 36, 0.4);
+}
+
+.badge-detail-icon.silver {
+    background: linear-gradient(135deg, #9ca3af, #6b7280);
+    box-shadow: 0 8px 30px rgba(156, 163, 175, 0.4);
+}
+
+.badge-detail-icon.bronze {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    box-shadow: 0 8px 30px rgba(217, 119, 6, 0.4);
+}
+
+.badge-detail-icon.crystal {
+    background: linear-gradient(135deg, var(--accent-gradient), var(--accent-crystal));
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+}
+
+.badge-detail h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-3);
+}
+
+.badge-detail p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-6);
+}
+
+.badge-detail-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-6);
+    background: var(--primary-light);
+    border-radius: var(--radius-lg);
+}
+
+.badge-stat {
+    text-align: center;
+}
+
+.badge-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gold-primary);
+}
+
+.badge-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--space-1);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .badges-header h1 {
+        font-size: 2rem;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .badges-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .badges-tabs {
+        gap: var(--space-2);
+    }
+    
+    .badge-tab {
+        padding: var(--space-2) var(--space-4);
+        font-size: 0.875rem;
+    }
+    
+    .task-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .task-progress {
+        align-items: center;
+        width: 100%;
+    }
+}

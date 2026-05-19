@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillDistill - 智能蒸馏学习平台</title>
+    <meta name="description" content="高效技能学习平台，通过知识蒸馏理念，帮助用户快速掌握职场核心能力">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2L35 12V28L20 38L5 28V12L20 2Z" stroke="url(#logoGradient)" stroke-width="2" fill="none"/>
+                        <path d="M20 8L28 14V26L20 32L12 26V14L20 8Z" fill="url(#logoGradient)" opacity="0.3"/>
+                        <circle cx="20" cy="20" r="4" fill="url(#logoGradient)"/>
+                        <defs>
+                            <linearGradient id="logoGradient" x1="5" y1="2" x2="35" y2="38" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#8b5cf6"/>
+                                <stop offset="1" stop-color="#6366f1"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="logo-text">SkillDistill</span>
+            </div>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="#home" class="nav-link active">首页</a>
+                <a href="#levels" class="nav-link">分层体系</a>
+                <a href="#modules" class="nav-link">蒸馏模块</a>
+                <a href="progress.html" class="nav-link">进度追踪</a>
+                <a href="community.html" class="nav-link">社区</a>
+                <a href="badges.html" class="nav-link">成就</a>
+            </div>
+            
+            <div class="nav-actions">
+                <div class="nav-progress" id="navProgress">
+                    <span class="progress-label">今日进度</span>
+                    <div class="progress-ring-mini">
+                        <svg viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--border-subtle)" stroke-width="3"/>
+                            <circle cx="18" cy="18" r="15.5" fill="none" stroke="url(#progressGradient)" stroke-width="3" 
+                                    stroke-dasharray="97.4" stroke-dashoffset="97.4" id="progressCircle" transform="rotate(-90 18 18)"/>
+                            <defs>
+                                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#8b5cf6"/>
+                                    <stop offset="100%" stop-color="#6366f1"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-bg">
+            <div class="hero-particles"></div>
+            <div class="hero-gradient"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title fade-in-up">
+                <span class="title-main">高效技能蒸馏</span>
+                <span class="title-sub">赋能你的成长之路</span>
+            </h1>
+            
+            <p class="hero-description fade-in-up" style="animation-delay: 0.2s">
+                摒弃冗余知识，聚焦核心能力。通过科学的学习体系和个性化的蒸馏路径，
+                <br>让你在最短时间内掌握职场核心竞争力
+            </p>
+            
+            <div class="hero-actions fade-in-up" style="animation-delay: 0.4s">
+                <button class="btn btn-primary btn-large" id="startDistillBtn">
+                    <span>开始蒸馏之旅</span>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="btn btn-secondary btn-large" id="learnMoreBtn">
+                    了解更多
+                </button>
+            </div>
+            
+            <div class="hero-stats fade-in-up" style="animation-delay: 0.6s">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="12847">0</div>
+                    <div class="stat-label">学习者</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="156">0</div>
+                    <div class="stat-label">精品课程</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="94">0</div>
+                    <div class="stat-label">平均提升%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="89">0</div>
+                    <div class="stat-label">用户满意度</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-visual">
+            <div class="crystal-animation">
+                <div class="crystal crystal-1"></div>
+                <div class="crystal crystal-2"></div>
+                <div class="crystal crystal-3"></div>
+                <div class="crystal-core"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Distillation Levels Section -->
+    <section id="levels" class="section levels-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">分层蒸馏体系</h2>
+                <p class="section-description">
+                    根据你的基础水平，选择最适合的蒸馏路径。三个层级，循序渐进，
+                    <br>从入门到精通，助你系统化提升核心技能
+                </p>
+            </div>
+            
+            <div class="levels-grid">
+                <!-- Beginner Level -->
+                <div class="level-card level-beginner" data-level="beginner">
+                    <div class="level-badge">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="level-title">基础入门蒸馏</h3>
+                    <div class="level-meta">
+                        <span class="meta-tag">零基础友好</span>
+                        <span class="meta-tag">1-2周入门</span>
+                    </div>
+                    <p class="level-description">
+                        从零开始建立知识框架，掌握核心理论和基础操作。
+                        配套丰富的案例讲解和动手练习，快速建立学习信心。
+                    </p>
+                    
+                    <ul class="level-features">
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            核心概念精讲
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            基础技能训练
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            入门案例实操
+                        </li>
+                    </ul>
+                    
+                    <div class="level-skills">
+                        <h4>涵盖技能领域</h4>
+                        <div class="skills-tags">
+                            <span class="skill-tag">职场沟通</span>
+                            <span class="skill-tag">时间管理</span>
+                            <span class="skill-tag">数据分析</span>
+                            <span class="skill-tag">PPT制作</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-outline level-btn" onclick="selectLevel('beginner')">
+                        选择入门课程
+                    </button>
+                </div>
+                
+                <!-- Intermediate Level -->
+                <div class="level-card level-intermediate featured" data-level="intermediate">
+                    <div class="featured-label">推荐入门</div>
+                    <div class="level-badge">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                        </svg>
+                    </div>
+                    <h3 class="level-title">进阶提升蒸馏</h3>
+                    <div class="level-meta">
+                        <span class="meta-tag">有基础者</span>
+                        <span class="meta-tag">2-4周提升</span>
+                    </div>
+                    <p class="level-description">
+                        深化理论理解，掌握进阶技巧和高级应用。
+                        通过真实项目演练，提升解决复杂问题的实战能力。
+                    </p>
+                    
+                    <ul class="level-features">
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            深度原理解析
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            实践技巧总结
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            项目实战演练
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            高级应用场景
+                        </li>
+                    </ul>
+                    
+                    <div class="level-skills">
+                        <h4>涵盖技能领域</h4>
+                        <div class="skills-tags">
+                            <span class="skill-tag">项目管理</span>
+                            <span class="skill-tag">团队协作</span>
+                            <span class="skill-tag">Python爬虫</span>
+                            <span class="skill-tag">商业分析</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary level-btn" onclick="selectLevel('intermediate')">
+                        开始进阶学习
+                    </button>
+                </div>
+                
+                <!-- Advanced Level -->
+                <div class="level-card level-advanced" data-level="advanced">
+                    <div class="level-badge">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="level-title">高阶精通蒸馏</h3>
+                    <div class="level-meta">
+                        <span class="meta-tag">专业进阶</span>
+                        <span class="meta-tag">1-3月精通</span>
+                    </div>
+                    <p class="level-description">
+                        前沿技术深度探索，最佳实践系统总结，
+                        创新应用案例分析。培养独立思考和创新能力，
+                        迈向专家级别。
+                    </p>
+                    
+                    <ul class="level-features">
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            前沿技术深度
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            最佳实践总结
+                        </li>
+                        <li>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8L6 11L13 4" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            创新应用案例
+                        </li>
+                    </ul>
+                    
+                    <div class="level-skills">
+                        <h4>涵盖技能领域</h4>
+                        <div class="skills-tags">
+                            <span class="skill-tag">架构设计</span>
+                            <span class="skill-tag">战略规划</span>
+                            <span class="skill-tag">AI应用</span>
+                            <span class="skill-tag">技术创新</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-outline level-btn" onclick="selectLevel('advanced')">
+                        挑战高阶课程
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Immersive Modules Section -->
+    <section id="modules" class="section modules-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">沉浸式蒸馏模块</h2>
+                <p class="section-description">
+                    四大核心模块，全方位提升学习效果。
+                    <br>从知识理解到技能应用，打造完整的学习闭环
+                </p>
+            </div>
+            
+            <div class="modules-grid">
+                <div class="module-card" data-module="knowledge">
+                    <div class="module-icon">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                            <circle cx="24" cy="24" r="20" stroke="url(#moduleGrad1)" stroke-width="2"/>
+                            <path d="M24 14V34M14 24H34" stroke="url(#moduleGrad1)" stroke-width="2"/>
+                            <circle cx="24" cy="24" r="8" stroke="url(#moduleGrad1)" stroke-width="2"/>
+                            <defs>
+                                <linearGradient id="moduleGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#8b5cf6"/>
+                                    <stop offset="100%" stop-color="#6366f1"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="module-title">核心知识点提炼</h3>
+                    <p class="module-description">
+                        精简的知识单元，配套可视化图解和关键要点标记。
+                        快速掌握核心概念，支持随时回顾复习。
+                    </p>
+                    <ul class="module-features">
+                        <li>精简知识单元，平均10分钟掌握一个要点</li>
+                        <li>可视化图解辅助理解复杂概念</li>
+                        <li>关键要点高亮标记，快速定位重点</li>
+                        <li>配套快速回顾卡片，碎片时间复习</li>
+                    </ul>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-label">已学习 0 个知识点</span>
+                    </div>
+                    <button class="btn btn-secondary module-btn" onclick="startModule('knowledge')">
+                        开始学习
+                    </button>
+                </div>
+                
+                <div class="module-card" data-module="practice">
+                    <div class="module-icon">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                            <rect x="8" y="8" width="32" height="32" rx="4" stroke="url(#moduleGrad2)" stroke-width="2"/>
+                            <path d="M16 24L22 30L34 18" stroke="url(#moduleGrad2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <defs>
+                                <linearGradient id="moduleGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#10b981"/>
+                                    <stop offset="100%" stop-color="#34d399"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="module-title">实操案例拆解</h3>
+                    <p class="module-description">
+                        真实场景模拟和案例拆解，从步骤详解到代码示例，
+                        帮助你将理论知识转化为实战能力。
+                    </p>
+                    <ul class="module-features">
+                        <li>精选真实项目案例，覆盖常见应用场景</li>
+                        <li>详细的步骤讲解，手把手带你实操</li>
+                        <li>完整代码示例，可直接运行验证</li>
+                        <li>常见错误分析，避免踩坑</li>
+                    </ul>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-label">已完成 0 个案例</span>
+                    </div>
+                    <button class="btn btn-secondary module-btn" onclick="startModule('practice')">
+                        开始实操
+                    </button>
+                </div>
+                
+                <div class="module-card" data-module="review">
+                    <div class="module-icon">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                            <circle cx="24" cy="24" r="20" stroke="url(#moduleGrad3)" stroke-width="2"/>
+                            <path d="M24 14V24L30 30" stroke="url(#moduleGrad3)" stroke-width="2" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="moduleGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#f59e0b"/>
+                                    <stop offset="100%" stop-color="#fbbf24"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="module-title">错题复盘蒸馏</h3>
+                    <p class="module-description">
+                        智能识别薄弱环节，深入分析错误原因，
+                        提供针对性巩固练习，确保知识点真正掌握。
+                    </p>
+                    <ul class="module-features">
+                        <li>AI智能分析薄弱环节，精准定位问题</li>
+                        <li>错误原因深入分析，理解问题本质</li>
+                        <li>正确解法详细演示，举一反三</li>
+                        <li>针对性巩固练习，强化学习效果</li>
+                    </ul>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-label">已攻克 0 个薄弱点</span>
+                    </div>
+                    <button class="btn btn-secondary module-btn" onclick="startModule('review')">
+                        开始复盘
+                    </button>
+                </div>
+                
+                <div class="module-card" data-module="application">
+                    <div class="module-icon">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                            <path d="M24 4L4 14V34L24 44L44 34V14L24 4Z" stroke="url(#moduleGrad4)" stroke-width="2"/>
+                            <path d="M24 14L14 19V29L24 34L34 29V19L24 14Z" stroke="url(#moduleGrad4)" stroke-width="2"/>
+                            <circle cx="24" cy="24" r="4" fill="url(#moduleGrad4)"/>
+                            <defs>
+                                <linearGradient id="moduleGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#ec4899"/>
+                                    <stop offset="100%" stop-color="#f472b6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3 class="module-title">技能应用演练</h3>
+                    <p class="module-description">
+                        模拟真实任务挑战，提供实时反馈和效果评估，
+                        帮助你在实践中深化理解，提升综合应用能力。
+                    </p>
+                    <ul class="module-features">
+                        <li>模拟真实工作任务场景，体验完整流程</li>
+                        <li>实时反馈系统，即时了解学习效果</li>
+                        <li>多维度效果评估，全面了解掌握程度</li>
+                        <li>个性化优化建议，持续提升能力</li>
+                    </ul>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-label">已完成 0 个任务</span>
+                    </div>
+                    <button class="btn btn-secondary module-btn" onclick="startModule('application')">
+                        开始演练
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personalized Recommendation Section -->
+    <section id="recommendation" class="section recommendation-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">个性化蒸馏路径</h2>
+                <p class="section-description">
+                    根据你的基础水平、目标方向和学习习惯，
+                    <br>智能推荐最适合你的技能提升路径
+                </p>
+            </div>
+            
+            <div class="recommendation-card">
+                <div class="assessment-prompt" id="assessmentPrompt">
+                    <div class="prompt-icon">
+                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                            <circle cx="32" cy="32" r="28" stroke="url(#promptGrad)" stroke-width="2"/>
+                            <path d="M32 20V44M20 32H44" stroke="url(#promptGrad)" stroke-width="2" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="promptGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#8b5cf6"/>
+                                    <stop offset="100%" stop-color="#6366f1"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3>开启你的个性化学习之旅</h3>
+                    <p>回答几个简单问题，获取专属的技能蒸馏路径推荐</p>
+                    <button class="btn btn-primary" id="startAssessmentBtn">
+                        开始能力评估
+                    </button>
+                </div>
+                
+                <div class="assessment-form hidden" id="assessmentForm">
+                    <div class="form-step active" data-step="1">
+                        <h3>Step 1: 选择你的目标领域</h3>
+                        <div class="form-options">
+                            <label class="form-option">
+                                <input type="checkbox" name="goals" value="职场沟通">
+                                <span class="option-content">
+                                    <span class="option-icon">💬</span>
+                                    <span class="option-label">职场沟通</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="checkbox" name="goals" value="数据分析">
+                                <span class="option-content">
+                                    <span class="option-icon">📊</span>
+                                    <span class="option-label">数据分析</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="checkbox" name="goals" value="技术开发">
+                                <span class="option-content">
+                                    <span class="option-icon">💻</span>
+                                    <span class="option-label">技术开发</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="checkbox" name="goals" value="项目管理">
+                                <span class="option-content">
+                                    <span class="option-icon">📋</span>
+                                    <span class="option-label">项目管理</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="checkbox" name="goals" value="产品运营">
+                                <span class="option-content">
+                                    <span class="option-icon">🚀</span>
+                                    <span class="option-label">产品运营</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="checkbox" name="goals" value="领导力">
+                                <span class="option-content">
+                                    <span class="option-icon">🎯</span>
+                                    <span class="option-label">领导力</span>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="nextStep1Btn" disabled>下一步</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-step" data-step="2">
+                        <h3>Step 2: 评估你的基础水平</h3>
+                        <div class="form-options">
+                            <label class="form-option">
+                                <input type="radio" name="level" value="beginner">
+                                <span class="option-content">
+                                    <span class="option-icon">🌱</span>
+                                    <span class="option-label">零基础小白</span>
+                                    <span class="option-desc">刚刚接触该领域</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="radio" name="level" value="intermediate">
+                                <span class="option-content">
+                                    <span class="option-icon">🌟</span>
+                                    <span class="option-label">有一定基础</span>
+                                    <span class="option-desc">了解基本概念和操作</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="radio" name="level" value="advanced">
+                                <span class="option-content">
+                                    <span class="option-icon">🚀</span>
+                                    <span class="option-label">专业进阶</span>
+                                    <span class="option-desc">希望进一步深化提升</span>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" id="prevStep2Btn">上一步</button>
+                            <button class="btn btn-primary" id="nextStep2Btn" disabled>下一步</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-step" data-step="3">
+                        <h3>Step 3: 你的学习时间</h3>
+                        <div class="form-options">
+                            <label class="form-option">
+                                <input type="radio" name="time" value="low">
+                                <span class="option-content">
+                                    <span class="option-icon">⏰</span>
+                                    <span class="option-label">碎片时间</span>
+                                    <span class="option-desc">每天少于30分钟</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="radio" name="time" value="medium">
+                                <span class="option-content">
+                                    <span class="option-icon">📆</span>
+                                    <span class="option-label">固定学习</span>
+                                    <span class="option-desc">每天30分钟-1小时</span>
+                                </span>
+                            </label>
+                            <label class="form-option">
+                                <input type="radio" name="time" value="high">
+                                <span class="option-content">
+                                    <span class="option-icon">💪</span>
+                                    <span class="option-label">深度学习</span>
+                                    <span class="option-desc">每天1-2小时以上</span>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" id="prevStep3Btn">上一步</button>
+                            <button class="btn btn-primary" id="generatePathBtn" disabled>生成学习路径</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recommendation-result hidden" id="recommendationResult">
+                    <div class="result-header">
+                        <h3>你的专属蒸馏路径</h3>
+                        <button class="btn btn-text" id="resetAssessmentBtn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M2 8a6 6 0 1 1 12 0A6 6 0 0 1 2 8z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M8 5V8L10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            重新评估
+                        </button>
+                    </div>
+                    <div class="recommended-skills" id="recommendedSkills">
+                    </div>
+                    <div class="result-stats">
+                        <div class="result-stat">
+                            <div class="stat-value" id="totalDuration">0</div>
+                            <div class="stat-label">预计完成时长</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="stat-value" id="skillCount">0</div>
+                            <div class="stat-label">推荐技能数</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="stat-value" id="dailyTime">0</div>
+                            <div class="stat-label">每日学习</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-large" id="startLearningBtn">
+                        开始学习之旅
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats Section -->
+    <section class="section stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 4L4 9V23L16 28L28 23V9L16 4Z" stroke="#8b5cf6" stroke-width="2"/>
+                            <path d="M16 14L11 16.5V21.5L16 24L21 21.5V16.5L16 14Z" fill="#8b5cf6"/>
+                        </svg>
+                    </div>
+                    <div class="stats-content">
+                        <div class="stats-value" id="userProgress">0</div>
+                        <div class="stats-label">你的学习进度</div>
+                        <div class="stats-unit">%</div>
+                    </div>
+                </div>
+                
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <circle cx="16" cy="16" r="12" stroke="#10b981" stroke-width="2"/>
+                            <path d="M16 8V16L22 19" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="stats-content">
+                        <div class="stats-value" id="learningStreak">0</div>
+                        <div class="stats-label">连续学习</div>
+                        <div class="stats-unit">天</div>
+                    </div>
+                </div>
+                
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 4L20 12L28 13L22 19L24 28L16 24L8 28L10 19L4 13L12 12L16 4Z" stroke="#fbbf24" stroke-width="2" fill="#fbbf24" fill-opacity="0.2"/>
+                        </svg>
+                    </div>
+                    <div class="stats-content">
+                        <div class="stats-value" id="earnedBadges">0</div>
+                        <div class="stats-label">已获成就</div>
+                        <div class="stats-unit">枚</div>
+                    </div>
+                </div>
+                
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <circle cx="16" cy="16" r="12" stroke="#ec4899" stroke-width="2"/>
+                            <path d="M16 10V22M10 16H22" stroke="#ec4899" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="stats-content">
+                        <div class="stats-value" id="communityPosts">0</div>
+                        <div class="stats-label">社区互动</div>
+                        <div class="stats-unit">次</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="section cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>准备好开始你的技能蒸馏之旅了吗？</h2>
+                <p>加入 thousands of 学习者，通过科学的学习方法快速提升核心能力</p>
+                <div class="cta-actions">
+                    <button class="btn btn-primary btn-large" id="ctaStartBtn">
+                        立即开始
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="window.location.href='community.html'">
+                        加入社区
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="logo-icon">
+                            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 2L35 12V28L20 38L5 28V12L20 2Z" stroke="url(#footerLogoGrad)" stroke-width="2" fill="none"/>
+                                <path d="M20 8L28 14V26L20 32L12 26V14L20 8Z" fill="url(#footerLogoGrad)" opacity="0.3"/>
+                                <circle cx="20" cy="20" r="4" fill="url(#footerLogoGrad)"/>
+                                <defs>
+                                    <linearGradient id="footerLogoGrad" x1="5" y1="2" x2="35" y2="38" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#8b5cf6"/>
+                                        <stop offset="1" stop-color="#6366f1"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <span>SkillDistill</span>
+                    </div>
+                    <p class="footer-desc">
+                        高效技能学习平台，通过知识蒸馏理念，
+                        帮助你快速掌握职场核心能力
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>快速链接</h4>
+                    <ul class="footer-links">
+                        <li><a href="#levels">分层体系</a></li>
+                        <li><a href="#modules">蒸馏模块</a></li>
+                        <li><a href="progress.html">进度追踪</a></li>
+                        <li><a href="community.html">社区交流</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>资源</h4>
+                    <ul class="footer-links">
+                        <li><a href="badges.html">成就徽章</a></li>
+                        <li><a href="#recommendation">学习路径</a></li>
+                        <li><a href="#">帮助中心</a></li>
+                        <li><a href="#">使用指南</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>联系我们</h4>
+                    <ul class="footer-links">
+                        <li>商务合作: business@skilldistill.com</li>
+                        <li>技术支持: support@skilldistill.com</li>
+                        <li>用户反馈: feedback@skilldistill.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 SkillDistill. All rights reserved.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="微信">WeChat</a>
+                    <a href="#" aria-label="微博">Weibo</a>
+                    <a href="#" aria-label="知乎">Zhihu</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Learning Modal -->
+    <div class="modal-overlay hidden" id="learningModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">学习模块</h3>
+                <button class="modal-close" id="closeModal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-content" id="modalContent">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modalCloseBtn">关闭</button>
+                <button class="btn btn-primary" id="modalConfirmBtn">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
