@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knowledge Distillation - 知识蒸馏</title>
+    <title>知识蒸馏 - Knowledge Distillation</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
                 <span class="logo-icon">⚗️</span>
-                <span class="logo-text">Knowledge Distillation</span>
+                <span class="logo-text">知识蒸馏</span>
             </div>
             <ul class="nav-links">
                 <li><a href="#home">首页</a></li>
@@ -26,9 +25,7 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <div class="hero-text">
-                <h1 class="hero-title">
-                    <span class="title-gradient">知识蒸馏</span>
-                </h1>
+                <h1 class="hero-title">知识蒸馏</h1>
                 <h2 class="hero-subtitle">Knowledge Distillation</h2>
                 <p class="hero-description">
                     将复杂模型的智慧传递给更轻量的模型，实现高效的知识迁移与模型压缩
@@ -48,13 +45,6 @@
                         <div class="node"></div>
                         <span class="layer-label">Teacher</span>
                     </div>
-                    <div class="connection-lines">
-                        <div class="line"></div>
-                        <div class="line"></div>
-                        <div class="line"></div>
-                        <div class="line"></div>
-                        <div class="line"></div>
-                    </div>
                     <div class="layer layer-student">
                         <div class="node"></div>
                         <div class="node"></div>
@@ -64,10 +54,6 @@
                 </div>
             </div>
         </div>
-        <div class="scroll-indicator">
-            <span>向下滚动探索</span>
-            <div class="scroll-arrow"></div>
-        </div>
     </section>
 
     <section id="methods" class="methods">
@@ -76,7 +62,7 @@
             <p class="section-description">探索主流的知识蒸馏技术</p>
         </div>
         <div class="methods-grid">
-            <div class="method-card" data-method="kd">
+            <div class="method-card">
                 <div class="method-icon">🔥</div>
                 <h3 class="method-title">经典蒸馏</h3>
                 <p class="method-author">Hinton et al., 2015</p>
@@ -85,10 +71,10 @@
                 </p>
                 <div class="method-tags">
                     <span class="tag">Soft Labels</span>
-                    <span class="tag">Temperature Scaling</span>
+                    <span class="tag">Temperature</span>
                 </div>
             </div>
-            <div class="method-card" data-method="fitnet">
+            <div class="method-card">
                 <div class="method-icon">🏋️</div>
                 <h3 class="method-title">FitNets</h3>
                 <p class="method-author">Romero et al., 2015</p>
@@ -100,7 +86,7 @@
                     <span class="tag">Feature Matching</span>
                 </div>
             </div>
-            <div class="method-card" data-method="at">
+            <div class="method-card">
                 <div class="method-icon">👁️</div>
                 <h3 class="method-title">Attention Transfer</h3>
                 <p class="method-author">Zagoruyko et al., 2016</p>
@@ -112,19 +98,19 @@
                     <span class="tag">Feature Transfer</span>
                 </div>
             </div>
-            <div class="method-card" data-method="crd">
+            <div class="method-card">
                 <div class="method-icon">🌐</div>
-                <h3 class="method-title">Contrastive Distillation</h3>
+                <h3 class="method-title">Contrastive KD</h3>
                 <p class="method-author">Tian et al., 2019</p>
                 <p class="method-description">
                     利用对比学习学习样本间的关系知识
                 </p>
                 <div class="method-tags">
-                    <span class="tag">Contrastive Learning</span>
-                    <span class="tag">Relational Knowledge</span>
+                    <span class="tag">Contrastive</span>
+                    <span class="tag">Relational</span>
                 </div>
             </div>
-            <div class="method-card" data-method="kdgan">
+            <div class="method-card">
                 <div class="method-icon">⚔️</div>
                 <h3 class="method-title">KD-GAN</h3>
                 <p class="method-author">Kim et al., 2018</p>
@@ -133,10 +119,10 @@
                 </p>
                 <div class="method-tags">
                     <span class="tag">GAN</span>
-                    <span class="tag">Adversarial Training</span>
+                    <span class="tag">Adversarial</span>
                 </div>
             </div>
-            <div class="method-card" data-method="sskd">
+            <div class="method-card">
                 <div class="method-icon">🎯</div>
                 <h3 class="method-title">Self-Supervised KD</h3>
                 <p class="method-author">Park et al., 2020</p>
@@ -145,7 +131,7 @@
                 </p>
                 <div class="method-tags">
                     <span class="tag">Self-Supervised</span>
-                    <span class="tag">Unlabeled Data</span>
+                    <span class="tag">Unlabeled</span>
                 </div>
             </div>
         </div>
@@ -246,8 +232,8 @@
                 <h3 class="resource-title">在线课程</h3>
                 <ul class="resource-list">
                     <li><a href="https://www.coursera.org/specializations/deep-learning" target="_blank">Deep Learning Specialization</a></li>
-                    <li><a href="https://www.youtube.com/c/DeepLearningAI" target="_blank">DeepLearning.AI YouTube</a></li>
                     <li><a href="https://www.fast.ai/" target="_blank">fast.ai Courses</a></li>
+                    <li><a href="https://www.kaggle.com/learn" target="_blank">Kaggle Learn</a></li>
                 </ul>
             </div>
         </div>
@@ -257,7 +243,7 @@
         <div class="footer-content">
             <div class="footer-logo">
                 <span class="logo-icon">⚗️</span>
-                <span class="logo-text">Knowledge Distillation</span>
+                <span class="logo-text">知识蒸馏</span>
             </div>
             <p class="footer-text">
                 探索知识蒸馏的无限可能，让AI模型更高效、更智能
@@ -269,7 +255,7 @@
                 <a href="#resources">资源</a>
             </div>
             <p class="footer-copyright">
-                © 2024 Knowledge Distillation. All rights reserved.
+                © 2024 知识蒸馏网站
             </p>
         </div>
     </footer>
