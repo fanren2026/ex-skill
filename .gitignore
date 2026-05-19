@@ -1,24 +1,22 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# 生成的前任 Skill（隐私保护，不上传）
+exes/
+!exes/example_xiaoming/
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# 临时文件
+/tmp/
+*.pyc
+__pycache__/
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+
+# 用户数据
+knowledge/
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+
+# 环境
+.env
+venv/
